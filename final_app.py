@@ -47,26 +47,22 @@ h1, h2, h3 {
 
 </style>
 """, unsafe_allow_html=True)
-# HEADER
+#card styling
 
-col1, col2 = st.columns([6,3 ])  # adjust ratio as needed
-
-with col1:
-    st.title("📈 StrategicTrends")
-    st.caption("**Your Stock Search Ends Here!**")
-    st.markdown("""
-No charts.           
-No technical analysis.             
-Just **AI-driven decisions**.
-""")
-
-with col2:
-    st.image("logo.png", width=250)  # adjust width if needed
-
-#st.caption("AI-Powered Investing for Busy Professionals & Students")
-
-
-st.markdown("---")
+st.markdown("""
+<style>
+.card {
+    background-color: #1c1f26;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.4);
+    margin-bottom: 20px;
+}
+.card h4 {
+    margin-bottom: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # SIDEBAR
 
@@ -81,6 +77,26 @@ option = st.sidebar.radio(
 # HOME PAGE
 
 if option == "Home":
+    # HEADER
+
+    col1, col2 = st.columns([6,3 ])  # adjust ratio as needed
+
+    with col1:
+        st.title("📈 StrategicTrends")
+        st.caption("**Your Stock Search Ends Here!**")
+        st.markdown("""
+No charts.           
+No technical analysis.             
+Just **AI-driven decisions**.
+""")
+
+    with col2:
+        st.image("logo.png", width=250)  # adjust width if needed
+
+    #st.caption("AI-Powered Investing for Busy Professionals & Students")
+
+
+    st.markdown("---")
 
     st.markdown("## 🚀 Welcome to StrategicTrends")
     st.markdown("""
@@ -112,19 +128,35 @@ This platform simplifies investing using **AI-powered strategies** especially de
         </div>
         """, unsafe_allow_html=True)
 
+   
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+        <div class="card">
+        <h4>🎯 Who is this for?</h4>
+        <ul>
+        <li>Professionals with no time for analysis</li>
+        <li>Students learning investing</li>
+        <li>Beginners entering markets</li>
+        </ul>
+        </div>
+    """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+        <div class="card">
+        <h4>💡 Why StrategicTrends?</h4>
+        <ul>
+        <li>No charts, no confusion</li>
+        <li>Pure AI-driven insights</li>
+        <li>Simple decisions</li>
+        </ul>
+        </div>
+    """, unsafe_allow_html=True)
     st.markdown("---")
-
-    st.markdown("""
-### 🎯 Who is this for?
-- Professionals with no time for analysis  
-- Students learning investing  
-- Beginners entering markets  
-
-### 💡 Why StrategicTrends?
-- No charts, no confusion  
-- Pure AI-driven insights  
-- Simple decisions  
-""")
+    
 
 # STRATEGY 1
 
