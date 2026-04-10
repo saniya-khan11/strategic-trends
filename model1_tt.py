@@ -1,4 +1,4 @@
-# CONFIGURATION REQUIRED FOR THE MODEL
+# CONFIGURATION REQUIRED 
 
 import yfinance as yf
 import pandas as pd
@@ -337,7 +337,7 @@ def run_backtest(data):
 
         print(f"\nRebalance Date: {all_dates[t].date()}")
 
-        # ── Training ──────────────────────────────────────
+        # Training 
         train_start   = max(WINDOW, t - TRAIN_YEARS * 252)
         train_indices = [
             i for i in range(train_start, t, 5)
@@ -388,7 +388,7 @@ def run_backtest(data):
                 avg_loss = epoch_loss / max(n_batches, 1)
                 print(f"  Epoch {epoch+1}/{N_EPOCHS}  loss={avg_loss:.4f}")
 
-        # ── Inference ─────────────────────────────────────
+        # Inference
         cs_test = build_cross_section(data, t, index_close)
         if cs_test is None:
             print("  No test cross-section — skipping.")
@@ -409,11 +409,11 @@ def run_backtest(data):
         long_return  = np.mean(Y_np[long_idx])
         net_return   = long_return - TRANSACTION_COST
 
-        # ── Metric 1: IC ───────────────────────────────────
+        # Metric 1: IC
         ic, _ = spearmanr(scores, Y_np)
         ic_scores.append(ic)
 
-        # ── Metric 2: Hit Rate vs Index ────────────────────
+        # Metric 2: Hit Rate vs Index 
         rebal_date = all_dates[t]
         try:
             idx_return = float(index_fwd_returns.loc[rebal_date])
@@ -424,7 +424,7 @@ def run_backtest(data):
 
         hit_rates.append(beat_index)
 
-        # ── Metric 3: Top-K Precision ──────────────────────
+        # Metric 3: Top-K Precision 
         actual_top_k    = set(np.argsort(Y_np)[-k:])
         predicted_top_k = set(long_idx)
         precision       = len(actual_top_k & predicted_top_k) / k
@@ -532,7 +532,7 @@ def get_live_recommendation(data, model, index_close):
     print(f"  - Weights          : softmax of model scores (not equal-weight)")
     print(f"  - Past performance does not guarantee future results")
 
-    # ── Full ranking table ─────────────────────────────────
+    # Full ranking table
     print(f"\n  --- Full ranking (all {n} stocks) ---")
     print(f"  {'Rank':<6} {'Stock':<20} {'Score':>8} {'Signal':>10}")
     print(f"  {'-'*48}")
@@ -665,21 +665,21 @@ def main():
         print("No results generated.")
         return
 
-    # ── Performance metrics ────────────────────────────────
+    # Performance metrics
     print("\n" + "="*45)
     print("BACKTEST RESULTS")
     print("="*45)
     for k, v in compute_metrics(portfolio).items():
         print(f"  {k:<18}: {v}")
 
-    # ── Accuracy report ────────────────────────────────────
+    # Accuracy report
     ic_scores        = [p["ic"]         for p in period_log]
     hit_rates        = [p["beat_index"] for p in period_log]
     precision_scores = [p["precision"]  for p in period_log]
 
     print_accuracy_report(period_log, ic_scores, hit_rates, precision_scores)
 
-    # ── Live recommendation ────────────────────────────────
+    # Live recommendation
     get_live_recommendation(data, model, index_close)
     save_live_results_to_csv()
 

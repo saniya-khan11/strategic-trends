@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
-import model2_var
+import model3_var
 
 # PAGE CONFIG
 st.set_page_config(
-    page_title="final_app",
+    page_title="StrategicTrends",
     layout="wide",
     page_icon="📈"
 )
@@ -71,7 +71,7 @@ st.sidebar.title("StrategicTrends")
 
 option = st.sidebar.radio(
     "",
-    ["Home", "Strategy 1: Transformer Picks", "Strategy 2: Value at Risk"]
+    ["Home", "Strategy 1: Transformer Picks", "Strategy 2: Xgboost model","Strategy 3: Value At Risk"]
 )
 
 # HOME PAGE
@@ -82,7 +82,7 @@ if option == "Home":
     col1, col2 = st.columns([6,3 ])  # adjust ratio as needed
 
     with col1:
-        st.title("📈 StrategicTrends")
+        st.title("StrategicTrends")
         st.caption("**Your Stock Search Ends Here!**")
         st.markdown("""
 No charts.           
@@ -98,7 +98,7 @@ Just **AI-driven decisions**.
 
     st.markdown("---")
 
-    st.markdown("## 🚀 Welcome to StrategicTrends")
+    st.markdown("## Welcome to StrategicTrends")
     st.markdown("""
 This platform simplifies investing using **AI-powered strategies** especially designed for working professionals and students who do not have enough time to do analysis on markets.
 
@@ -120,7 +120,7 @@ This platform simplifies investing using **AI-powered strategies** especially de
     with col2:
         st.markdown("""
         <div class="card">
-        <p class="big-font">⚠️ Risk Management</p>
+        <p class="big-font"> Risk Management</p>
         <p class="small-text">
         Calculates Value at Risk (VaR) to estimate potential losses 
         in extreme market conditions.
@@ -135,7 +135,7 @@ This platform simplifies investing using **AI-powered strategies** especially de
     with col1:
         st.markdown("""
         <div class="card">
-        <h4>🎯 Who is this for?</h4>
+        <h4>Who is this for?</h4>
         <ul>
         <li>Professionals with no time for analysis</li>
         <li>Students learning investing</li>
@@ -147,7 +147,7 @@ This platform simplifies investing using **AI-powered strategies** especially de
     with col2:
         st.markdown("""
         <div class="card">
-        <h4>💡 Why StrategicTrends?</h4>
+        <h4>Why StrategicTrends?</h4>
         <ul>
         <li>No charts, no confusion</li>
         <li>Pure AI-driven insights</li>
@@ -200,12 +200,12 @@ elif option == "Strategy 1: Transformer Picks":
     except:
         st.markdown("""
         <div class="card">
-        ❌ No stock recommendations available<br>
+        No stock recommendations available<br>
         Run the model first
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("### 📊 Top Picks")
+    st.markdown("### Top Picks")
 
     try:
         df = pd.read_csv("model1_output.csv")
@@ -217,7 +217,7 @@ elif option == "Strategy 1: Transformer Picks":
             st.dataframe(top_df, use_container_width=True)
 
         with col2:
-            st.markdown("### 📈 Score Visualization")
+            st.markdown("### Score Visualization")
             st.bar_chart(top_df.set_index("Stock"))
 
         st.success("Model updated successfully")
@@ -228,9 +228,45 @@ elif option == "Strategy 1: Transformer Picks":
 
 # STRATEGY 2
 
-elif option == "Strategy 2: Value at Risk":
+elif option == "Strategy 2: Xgboost model":
 
-    st.markdown("## ⚠️ Value at Risk Calculation for your Portfolio")
+    
+     st.markdown("## 🚀 XGBoost Trading Signals")
+
+    st.markdown("""
+<div class="card">
+<b>Model:</b> XGBoost + Sentiment (FinBERT) <br>
+<b>Type:</b> Precomputed Daily Signals <br>
+<b>Update:</b> Every Night
+</div>
+""", unsafe_allow_html=True)
+
+    try:
+        df = pd.read_csv("model3_output.csv")
+
+        st.success("✅ Latest Signals Loaded")
+
+        st.markdown("### 📊 Signals")
+
+        col1, col2 = st.columns([2,1])
+
+        with col1:
+            st.dataframe(df, use_container_width=True)
+
+        with col2:
+            st.markdown("### 📈 Confidence")
+            st.bar_chart(df.set_index("Stock")["Confidence"])
+
+        st.markdown("### 📅 Last Updated")
+        st.info(df["Date"].iloc[0])
+
+    except:
+        st.error("❌ No data found. Run model3_xgboost.py first.")
+
+# STRATEGY 3
+
+elif option == "Strategy 3: Value At Risk":
+    st.markdown("## Value at Risk Calculation for your Portfolio")
 
     st.markdown("""
 <div class="card">
@@ -252,7 +288,7 @@ It gives you the a single - day maximum expected loss of your portfolio with 95 
 
     st.markdown("")
 
-    if st.button("🚀 Run Risk Analysis", use_container_width=True):
+    if st.button("Run Risk Analysis", use_container_width=True):
 
         if not selected_stocks:
             st.warning("Select at least one stock")
@@ -266,17 +302,17 @@ It gives you the a single - day maximum expected loss of your portfolio with 95 
             else:
                 st.success("Analysis Complete")
 
-                st.markdown("### 📊 Portfolio Metrics")
+                st.markdown("### Portfolio Metrics")
 
                 col1, col2, col3 = st.columns(3)
 
-                col1.metric("📉 VaR", results["VaR"]*100,"%")
-                col2.metric("📊 Mean Return", results["Mean Return"]*100,"%")
-                col3.metric("📈 Volatility", results["Volatility"]*100,"%")
+                col1.metric("VaR", results["VaR"]*100,"%")
+                col2.metric("Mean Return", results["Mean Return"]*100,"%")
+                col3.metric("📈Volatility", results["Volatility"]*100,"%")
 
                 st.markdown("---")
 
-                st.markdown("### 🧠 Interpretation")
+                st.markdown("###  Interpretation")
 
                 risk_level = "Low Risk ✅" if results["VaR"] < 0.02 else "High Risk ⚠️"
 
@@ -284,9 +320,9 @@ It gives you the a single - day maximum expected loss of your portfolio with 95 
 <div class="card">
 <b>Risk Level:</b> {risk_level} <br><br>
 
-There is a <b>5% chance</b> your portfolio may lose more than <b>{results["VaR"]*100:.2f}% in a single day</b>.
+There is a <b>95% chance</b> your portfolio may not lose more than <b>{results["VaR"]*100:.2f}% in a single day</b>.
 </div>
 """, unsafe_allow_html=True)
 
-                st.markdown("### 📌 Selected Stocks")
+                st.markdown("### Selected Stocks")
                 st.write(results["Selected Stocks"])
