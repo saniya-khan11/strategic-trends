@@ -68,11 +68,16 @@ st.markdown("""
 
 #st.sidebar.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=80)
 st.sidebar.title("StrategicTrends")
-
 option = st.sidebar.radio(
-    "",
-    ["Home", "Strategy 1: Transformer Picks", "Strategy 2: Value at Risk"]
+    "Choose Section",
+    [
+        "Home",
+        "Strategy 1: Transformer Picks",
+        "Strategy 2: xgboost signals",
+        "Strategy 3: Value at Risk",
+    ]
 )
+
 
 # HOME PAGE
 
@@ -82,7 +87,7 @@ if option == "Home":
     col1, col2 = st.columns([6,3 ])  # adjust ratio as needed
 
     with col1:
-        st.title("📈 StrategicTrends")
+        st.title("StrategicTrends")
         st.caption("**Your Stock Search Ends Here!**")
         st.markdown("""
 No charts.           
@@ -98,7 +103,7 @@ Just **AI-driven decisions**.
 
     st.markdown("---")
 
-    st.markdown("## 🚀 Welcome to StrategicTrends")
+    st.markdown("## Welcome to StrategicTrends")
     st.markdown("""
 This platform simplifies investing using **AI-powered strategies** especially designed for working professionals and students who do not have enough time to do analysis on markets.
 
@@ -147,7 +152,7 @@ This platform simplifies investing using **AI-powered strategies** especially de
     with col2:
         st.markdown("""
         <div class="card">
-        <h4>💡 Why StrategicTrends?</h4>
+        <h4>Why StrategicTrends?</h4>
         <ul>
         <li>No charts, no confusion</li>
         <li>Pure AI-driven insights</li>
@@ -205,7 +210,7 @@ elif option == "Strategy 1: Transformer Picks":
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("### 📊 Top Picks")
+    st.markdown("### Top Picks")
 
     try:
         df = pd.read_csv("model1_output.csv")
@@ -217,7 +222,7 @@ elif option == "Strategy 1: Transformer Picks":
             st.dataframe(top_df, use_container_width=True)
 
         with col2:
-            st.markdown("### 📈 Score Visualization")
+            st.markdown("### Score Visualization")
             st.bar_chart(top_df.set_index("Stock"))
 
         st.success("Model updated successfully")
@@ -228,7 +233,97 @@ elif option == "Strategy 1: Transformer Picks":
 
 # STRATEGY 2
 
-elif option == "Strategy 2: Value at Risk":
+elif option == "Strategy 2: xgboost signals":
+
+    st.header("Xgboost Hybrid Multi-Factor Trading Model")
+    st.caption("AI + Technical Indicators + Sentiment Analysis")
+
+    st.markdown("""
+This strategy combines:
+
+- Technical Indicators (EMA, RSI, MACD)
+- 🧠 Sentiment Analysis (News + FinBERT)
+- Machine Learning (XGBoost)
+
+Output: **Next-Day Buy/Sell/Hold Signals**
+""")
+
+    st.divider()
+
+    try:
+        # =========================
+        # LOAD DATA
+        # =========================
+        df = pd.read_csv("model2_output.csv")
+        st.success("✅ Latest Signals Loaded")
+
+        # =========================
+        # USER INPUT ONLY
+        # =========================
+        search = st.text_input("🔎 Enter Stock Name (e.g., RELIANCE, TCS)")
+
+        st.markdown("### Horizon")
+        st.info("Next Trading Day")
+
+        st.divider()
+
+        # =========================
+        # SHOW RESULT ONLY IF USER ENTERS
+        # =========================
+        if search:
+
+            filtered = df[df["Stock"].str.upper() == search.upper()]
+
+            if not filtered.empty:
+
+                result = filtered.iloc[0]
+                signal = result["Next Day Signal"]
+
+                # SIGNAL STYLE
+                if signal.lower() == "buy":
+                    color = "green"
+                    emoji = "🟢"
+                elif signal.lower() == "sell":
+                    color = "red"
+                    emoji = "🔴"
+                else:
+                    color = "orange"
+                    emoji = "🟡"
+
+                # METRICS
+                col1, col2, col3 = st.columns(3)
+
+                col1.metric("Price", f"₹{result['Current Price']}")
+                col2.metric("Signal", f"{emoji} {signal}")
+                col3.metric("Confidence", f"{result['Confidence (%)']}%")
+
+                st.divider()
+
+                # =========================
+                # INSIGHT
+                # =========================
+                st.subheader("Model Insight")
+
+                if signal.lower() == "buy":
+                    st.success("Strong bullish signals detected across momentum, trend, and sentiment.")
+                elif signal.lower() == "sell":
+                    st.error("Bearish indicators dominate. Risk of downside movement.")
+                else:
+                    st.warning("Mixed signals. Market indecisive.")
+
+            else:
+                st.error("❌ Stock not found. Please enter a valid stock name.")
+
+        else:
+            st.info(" Enter a stock name to see AI prediction.")
+
+    except Exception as e:
+        st.error("❌ model4_output.csv not found. Run model first.")
+        st.code("python model4_xgboost.py")
+# ======================================================
+# STRATEGY 3
+# ======================================================
+elif option == "Strategy 3: Value at Risk":
 
     st.markdown("## ⚠️ Value at Risk Calculation for your Portfolio")
 
@@ -270,9 +365,9 @@ It gives you the a single - day maximum expected loss of your portfolio with 95 
 
                 col1, col2, col3 = st.columns(3)
 
-                col1.metric("📉 VaR", results["VaR"]*100,"%")
-                col2.metric("📊 Mean Return", results["Mean Return"]*100,"%")
-                col3.metric("📈 Volatility", results["Volatility"]*100,"%")
+                col1.metric("VaR", results["VaR"]*100,"%")
+                col2.metric("Mean Return", results["Mean Return"]*100,"%")
+                col3.metric("Volatility", results["Volatility"]*100,"%")
 
                 st.markdown("---")
 
@@ -288,5 +383,6 @@ There is a <b>5% chance</b> your portfolio may lose more than <b>{results["VaR"]
 </div>
 """, unsafe_allow_html=True)
 
-                st.markdown("### 📌 Selected Stocks")
+                st.markdown("### Selected Stocks")
                 st.write(results["Selected Stocks"])
+
