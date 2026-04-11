@@ -365,9 +365,9 @@ It gives you the a single - day maximum expected loss of your portfolio with 95 
 
                 col1, col2, col3 = st.columns(3)
 
-                col1.metric("VaR", results["VaR"]*100,"%")
-                col2.metric("Mean Return", results["Mean Return"]*100,"%")
-                col3.metric("Volatility", results["Volatility"]*100,"%")
+                col1.metric("VaR", f"{results['VaR']*100:.2f}%")
+                col2.metric("Mean Return", f"{results['Mean Return']*100:.2f}%")
+                col3.metric("Volatility", f"{results['Volatility']*100:.2f}%")
 
                 st.markdown("---")
 
